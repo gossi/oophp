@@ -1,0 +1,18 @@
+{
+	"name" : "php/file",
+	"description" : "php OO filesystem wrapper",
+	"type" : "library",
+	"homepage" : "http://php.net/manual/book.filesystem.php",
+	"autoload" : {
+		"psr-0" : {
+			"php\\file" : ""
+		}
+	},
+	"require": {
+		"php/date": "dev-master"
+	},
+	"keywords" : [
+		"php",
+		"file"
+	]
+}

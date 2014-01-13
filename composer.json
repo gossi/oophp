@@ -1,0 +1,21 @@
+{
+	"keywords" : [
+		"php",
+		"oop"
+	],
+	"autoload" : {
+		"psr-0" : {
+			"php" : "src"
+		}
+	},
+	"name" : "gossi/oophp",
+	"type" : "library",
+	"description" : "What if php would be an object oriented programming language",
+	"license" : "MIT",
+	"require" : {
+		"php" : ">=5.4"
+	},
+	"require-dev" : {
+		"sami/sami" : "~1"
+	}
+}

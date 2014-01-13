@@ -1,0 +1,15 @@
+{
+	"name" : "php/date",
+	"description" : "php OO date wrapper",
+	"type" : "library",
+	"homepage" : "http://php.net/manual/book.datetime.php",
+	"autoload" : {
+		"psr-0" : {
+			"php\\date" : ""
+		}
+	},
+	"keywords" : [
+		"php",
+		"date"
+	]
+}
