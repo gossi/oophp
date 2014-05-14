@@ -5,12 +5,12 @@ namespace php\file;
 use php\file\exception\FileException;
 use php\date\DateTime;
 
-class File implements FileInterface {
+class FileInfo implements FileInfoInterface {
 	
-	private $fileName;
+	protected $pathName;
 	
-	public function __construct($fileName) {
-		$this->fileName = $fileName;	
+	public function __construct($pathName) {
+		$this->pathName = $pathName;	
 	}
 	
 	/**
@@ -24,9 +24,9 @@ class File implements FileInterface {
 	 */
 	public function changeGroup($group) {
 		if ($this->isFile()) {
-			return chgrp($this->fileName, $group);
+			return chgrp($this->pathName, $group);
 		} else if ($this->isLink()) {
-			return lchgrp($this->fileName, $group);
+			return lchgrp($this->pathName, $group);
 		}
 	}
 	
@@ -45,9 +45,9 @@ class File implements FileInterface {
 	 */
 	public function changeMode($mode) {
 		if ($this->isFile()) {
-			return chmod($this->fileName, $mode);
+			return chmod($this->pathName, $mode);
 		} else if ($this->isLink()) {
-			return lchmod($this->fileName, $mode);
+			return lchmod($this->pathName, $mode);
 		}
 	}
 	
@@ -61,9 +61,9 @@ class File implements FileInterface {
 	 */
 	public function changeOwner($user) {
 		if ($this->isFile()) {
-			return chown($this->fileName, $user);
+			return chown($this->pathName, $user);
 		} else if ($this->isLink()) {
-			return lchown($this->fileName, $user);
+			return lchown($this->pathName, $user);
 		}
 	}
 	
@@ -81,11 +81,11 @@ class File implements FileInterface {
 			$destination = $destination->toString();
 		}
 
-		if (!copy($this->fileName, $destination)) {
-			throw new FileException(sprintf('Failed to copy %s to %s', $this->fileName, $destination));
+		if (!copy($this->pathName, $destination)) {
+			throw new FileException(sprintf('Failed to copy %s to %s', $this->pathName, $destination));
 		}
 		
-		return new File($destination);
+		return new FileInfo($destination);
 	}
 	
 	
@@ -96,7 +96,7 @@ class File implements FileInterface {
 		if ($destination instanceof PathInterface) {
 			$destination = $destination->toString();
 		}
-		return rename($this->fileName, $destination);
+		return rename($this->pathName, $destination);
 	}
 
 	
@@ -105,13 +105,13 @@ class File implements FileInterface {
 	 */
 	public function delete() {
 		if ($this->isFile() || $this->isLink()) {
-			unlink($this->fileName);
+			unlink($this->pathName);
 		} else if ($this->isDirectory()) {
 			$files = $this->readDirectory();
 			foreach ($files as $file) {
 				$file->delete();
 			}
-			rmdir($this->fileName);
+			rmdir($this->pathName);
 		}
 	}
 
@@ -122,24 +122,16 @@ class File implements FileInterface {
 	 * 		pointing to non-existing files.  
 	 */
 	public function exists() {
-		return file_exists($this->fileName);
-	}
-	
-	/**
-	 * Returns the file extension
-	 * 
-	 * @return String Returns a string containing the file extension, or an empty string if 
-	 * 		the file has no extension. 
-	 */
-	public function getExtension() {
-		return pathinfo($this->fileName, PATHINFO_EXTENSION);
+		return file_exists($this->pathName);
 	}
 
 	/**
 	 * Returns the filename
+	 * 
+	 * @return string the filename
 	 */
 	public function getFilename() {
-		return basename($this->fileName);
+		return basename($this->pathName);
 	}
 	
 	/**
@@ -148,7 +140,7 @@ class File implements FileInterface {
 	 * @return string
 	 */
 	public function getPath() {
-		return dirname($this->fileName);
+		return dirname($this->pathName);
 	}
 	
 	/**
@@ -157,25 +149,16 @@ class File implements FileInterface {
 	 * @return String
 	 */
 	public function getPathname() {
-		return $this->fileName;
+		return $this->pathName;
 	}
 	
 	/**
 	 * Returns the path
 	 *
-	 * @return Path
+	 * @return PathInterface
 	 */
 	public function toPath() {
-		return new Path($this->fileName);
-	}
-	
-	/**
-	 * Returns the target if this is a symbolic link
-	 *
-	 * @return String The target path
-	 */
-	public function getLinkTarget() {
-		return readlink($this->fileName);
+		return new Path($this->pathName);
 	}
 	
 	/**
@@ -184,7 +167,7 @@ class File implements FileInterface {
 	 * @return DateTime
 	 */
 	public function getATime() {
-		$timestamp = fileatime($this->fileName);
+		$timestamp = fileatime($this->pathName);
 		$time = new DateTime();
 		$time->setTimestamp($timestamp);
 		return $time;
@@ -196,7 +179,7 @@ class File implements FileInterface {
 	 * @return DateTime
 	 */
 	public function getCTime() {
-		$timestamp = filectime($this->fileName);
+		$timestamp = filectime($this->pathName);
 		$time = new DateTime();
 		$time->setTimestamp($timestamp);
 		return $time;
@@ -208,7 +191,7 @@ class File implements FileInterface {
 	 * @return DateTime
 	 */
 	public function getMTime() {
-		$timestamp = filemtime($this->fileName);
+		$timestamp = filemtime($this->pathName);
 		$time = new DateTime();
 		$time->setTimestamp($timestamp);
 		return $time;
@@ -220,7 +203,7 @@ class File implements FileInterface {
 	 * @return int Returns the inode number of the file, or FALSE on failure. 
 	 */
 	public function getInode() {
-		return fileinode($this->fileName);
+		return fileinode($this->pathName);
 	}
 	
 	/**
@@ -229,7 +212,7 @@ class File implements FileInterface {
 	 * @return int Returns the group ID, or FALSE if an error occurs.
 	 */
 	public function getGroup() {
-		return filegroup($this->fileName);
+		return filegroup($this->pathName);
 	}
 	
 	/**
@@ -238,7 +221,7 @@ class File implements FileInterface {
 	 * @return int Returns the user ID of the owner, or FALSE on failure.
 	 */
 	public function getOwner() {
-		return fileowner($this->fileName);
+		return fileowner($this->pathName);
 	}
 	
 	/**
@@ -251,7 +234,7 @@ class File implements FileInterface {
 	 * 		and file types on POSIX systems, including Linux and Mac OS X. 
 	 */
 	public function getPermissions() {
-		return fileperms($this->fileName);
+		return fileperms($this->pathName);
 	}
 	
 	/**
@@ -260,7 +243,7 @@ class File implements FileInterface {
 	 * @return boolean Returns TRUE if the filename exists and is a directory, FALSE otherwise.
 	 */
 	public function isDirectory() {
-		return is_dir($this->fileName);
+		return is_dir($this->pathName);
 	}
 	
 	/**
@@ -269,7 +252,7 @@ class File implements FileInterface {
 	 * @return boolean Returns TRUE if exists and is executable.
 	 */
 	public function isExecutable() {
-		return is_executable($this->fileName);
+		return is_executable($this->pathName);
 	}
 	
 	/**
@@ -278,7 +261,7 @@ class File implements FileInterface {
 	 * @return boolean Returns TRUE if exists and is readable.
 	 */
 	public function isReadable() {
-		return is_readable($this->fileName);
+		return is_readable($this->pathName);
 	}
 	
 	/**
@@ -287,7 +270,7 @@ class File implements FileInterface {
 	 * @return boolean Returns TRUE if exists and is writable. 
 	 */
 	public function isWritable() {
-		return is_writable($this->fileName);
+		return is_writable($this->pathName);
 	}
 	
 	/**
@@ -296,7 +279,7 @@ class File implements FileInterface {
 	 * @return boolean Returns TRUE if the filename exists and is a regular file, FALSE otherwise. 
 	 */
 	public function isFile() {
-		return is_file($this->fileName);
+		return is_file($this->pathName);
 	}
 
 	/**
@@ -305,52 +288,42 @@ class File implements FileInterface {
 	 * @return boolean Returns TRUE if the filename exists and is a symbolic link, FALSE otherwise.
 	 */
 	public function isLink() {
-		return is_link($this->fileName);
+		return is_link($this->pathName);
 	}
+
 	
-	public function read() {
-		if (!$this->exists()) {
-			throw new FileException(sprintf('File does not exist: %s', $this->getFilename()));
-		}
-		
-		if ($this->isFile()) {
-			return file_get_contents($this->fileName);
-		}
-	}
-	
-	/**
-	 * 
-	 * @param boolean $omitDots
-	 * @throws FileException
-	 * @return File[]
+	/* (non-PHPdoc)
+	 * @see \php\file\FileInfoInterface::toFile()
 	 */
-	public function readDirectory($omitDots = true) {
-		if (!$this->exists()) {
-			throw new FileException(sprintf('File does not exist: %s', $this->getFilename()));
+	public function toFile() {
+		if (!$this->isFile()) {
+			throw new FileException('Cannot create File, resource is not a file');
 		}
 		
-		if ($this->isDirectory()) {
-			return file_get_contents($this->fileName);
-		} else if($target->isDirectory()) {
-			$files = [];
-			foreach (new \DirectoryIterator($this->fileName) as $file) {
-				if ($file->isDot() && !$omitDots) {
-					$files[] = new File($file->getFilename());
-				}
-			}
-			return $files;
+		return new File($this->pathName);
+	}
+	
+	/* (non-PHPdoc)
+	 * @see \php\file\FileInfoInterface::toDirectory()
+	 */
+	public function toDirectory() {
+		if (!$this->isDirectory()) {
+			throw new FileException('Cannot create Directory, resource is not a directy');
 		}
+		
+		return new Directory($this->pathName);
 	}
+
 	
-	public function write($contents) {
-		file_put_contents($this->fileName, $contents);
+	/* (non-PHPdoc)
+	 * @see \php\file\FileInfoInterface::toLink()
+	 */
+	public function toLink() {
+		if (!$this->isLink()) {
+			throw new FileException('Cannot create Link, resource is not a link');
+		}
+		
+		return new Link($this->pathName);
 	}
-	
-	public function append($contents) {
-		$this->write($this->read() . $contents);
-	}
-	
-	public function prepend($contents) {
-		$this->write($contents . $this->read());
-	}
+
 }

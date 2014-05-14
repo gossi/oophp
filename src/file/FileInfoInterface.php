@@ -3,8 +3,9 @@
 namespace php\file;
 
 use php\date\DateTime;
+use php\file\exception\FileException;
 
-interface FileInterface {
+interface FileInfoInterface {
 	/**
 	 * Attempts to change the group.
 	 *
@@ -118,6 +119,61 @@ interface FileInterface {
 	 * 		and file types on POSIX systems, including Linux and Mac OS X.
 	 */
 	public function getPermissions();
+	
+	/**
+	 * Returns the filename
+	 *
+	 * @return string the filename
+	 */
+	public function getFilename();
+	
+	/**
+	 * Gets the path without filename
+	 *
+	 * @return string
+	 */
+	public function getPath();
+	
+	/**
+	 * Gets the path to the file
+	 *
+	 * @return String
+	 */
+	public function getPathname();
+	
+	/**
+	 * Returns the path
+	 *
+	 * @return PathInterface
+	 */
+	public function toPath();
+	
+	/**
+	 * Creates a file
+	 * 
+	 * @see #isFile
+	 * 
+	 * @throws FileException whether the resource is not a file
+	 */
+	public function toFile();
+	
+	/**
+	 * Create a directory
+	 * 
+	 * @see #isDirectory
+	 * 
+	 * @throws FileException whether the resource is not a directory
+	 */
+	public function toDirectory();
+	
+	/**
+	 * Creates a link
+	 * 
+	 * @see #isLink
+	 * 
+	 * @throws FileException whether the resource is not a link
+	 */
+	public function toLink();
 	
 	/**
 	 * Tells whether this is a directory

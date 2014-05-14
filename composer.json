@@ -4,8 +4,8 @@
 		"oop"
 	],
 	"autoload" : {
-		"psr-0" : {
-			"php" : "src"
+		"psr-4" : {
+			"php\\" : "src"
 		}
 	},
 	"name" : "gossi/oophp",

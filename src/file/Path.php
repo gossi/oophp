@@ -158,7 +158,7 @@ class Path implements PathInterface {
 	 * @return File
 	 */
 	public function toFile() {
-		return new File($this->pathName);
+		return new FileInfo($this->pathName);
 	}
 	
 	/**

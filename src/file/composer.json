@@ -4,12 +4,13 @@
 	"type" : "library",
 	"homepage" : "http://php.net/manual/book.filesystem.php",
 	"autoload" : {
-		"psr-0" : {
-			"php\\file" : ""
+		"psr-4" : {
+			"php\\file\\" : "src/file"
 		}
 	},
-	"require": {
-		"php/date": "dev-master"
+	"require" : {
+		"php/date" : "dev-master",
+		"php/lang" : "dev-master"
 	},
 	"keywords" : [
 		"php",

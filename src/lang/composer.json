@@ -1,0 +1,15 @@
+{
+	"name" : "php/lang",
+	"description" : "php OO language wrapper",
+	"type" : "library",
+	"homepage" : "http://www.php.net/manual/langref.php",
+	"autoload" : {
+		"psr-4" : {
+			"php\\lang\\" : "src/lang"
+		}
+	},
+	"keywords" : [
+		"php",
+		"lang"
+	]
+}
