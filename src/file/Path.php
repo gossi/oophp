@@ -2,17 +2,76 @@
 
 namespace php\file;
 
-class Path implements PathInterface {
+use php\lang\String;
+
+class Path {
 	
+	private $extension;
 	private $pathName;
+	private $segments;
 	
 	public function __construct($pathName) {
-		$this->pathName = $pathName;
+		$this->pathName = new String($pathName);
+		$this->segments = $this->pathName->split('/');
+		
+		$pathInfo = pathinfo($this->pathName);
+		$this->extension = $pathInfo['extension'];
+		$this->fileName = $pathInfo['filename'];
 	}
 	
-// 	public function setExtension($extension) {
+	public function getExtension() {
+		return pathinfo($this->pathName, PATHINFO_EXTENSION);
+	}
+	
+	/**
+	 * Returns the filename
+	 *
+	 * @return string the filename
+	 */
+	public function getFilename() {
+		return basename($this->pathName);
+	}
+	
+	/**
+	 * Gets the path without filename
+	 *
+	 * @return string
+	 */
+	public function getPath() {
+		return dirname($this->pathName);
+	}
+	
+	/**
+	 * Gets the path to the file
+	 *
+	 * @return String
+	 */
+	public function getPathname() {
+		return $this->pathName;
+	}
+	
+	/**
+	 * Changes the extension of this path
+	 * 
+	 * @param string $extension the new extension
+	 * @return Path $this
+	 */
+	public function setExtension($extension) {
+		$pathinfo = pathinfo($this->pathName);
 		
-// 	}
+		$this->pathName = new String($pathinfo['dirname']);
+		if (!empty($pathinfo['dirname'])) {
+			$this->pathName->append('/');
+		}
+		
+		$this->pathName
+			->append($pathinfo['filename'])
+			->append('.')
+			->append($extension)
+		;
+		
+		return $this;
+	}
 	
 	/**
 	 * Returns a path with the same segments as this path but with a 
@@ -22,6 +81,7 @@ class Path implements PathInterface {
 	 */
 	public function addTrailingSeparator() {
 		
+		return $this;
 	}
 	
 	/**
@@ -29,9 +89,11 @@ class Path implements PathInterface {
 	 * segments/string to the end of this path.
 	 * 
 	 * @param String|Path $path
+	 * @return Path
 	 */
 	public function append($path) {
 		
+		return $this;
 	}
 
 	/**
@@ -55,6 +117,7 @@ class Path implements PathInterface {
 	/**
 	 * 
 	 * @param Path $anotherPath
+	 * @return boolean
 	 */
 	public function isPrefixOf(Path $anotherPath) {
 		
@@ -116,7 +179,7 @@ class Path implements PathInterface {
 	}
 	
 	/**
-	 * Returns a path with the same segments as this path but with a trailing separator removed.
+	 * Returns a copy of this path with the same segments as this path but with a trailing separator removed.
 	 * 
 	 * @return Path
 	 */
@@ -131,7 +194,11 @@ class Path implements PathInterface {
 	 * @return String
 	 */
 	public function segment($index) {
-		
+		if (isset($this->segments[$index])) {
+			return $this->segments[$index];
+		}
+
+		return null;
 	}
 	
 	/**
@@ -140,7 +207,7 @@ class Path implements PathInterface {
 	 * @return int
 	 */
 	public function segmentCount() {
-		
+		return count($this->segments);
 	}
 	
 	/**
@@ -149,7 +216,7 @@ class Path implements PathInterface {
 	 * @return String[]
 	 */
 	public function segments() {
-		
+		return $this->segments;
 	}
 	
 	/**
@@ -158,7 +225,7 @@ class Path implements PathInterface {
 	 * @return File
 	 */
 	public function toFile() {
-		return new FileInfo($this->pathName);
+		return new Resource($this->pathName);
 	}
 	
 	/**
@@ -167,7 +234,7 @@ class Path implements PathInterface {
 	 * @return String A string representation of this path
 	 */
 	public function toString() {
-		
+		return $this->pathName;
 	}
 	
 	/**

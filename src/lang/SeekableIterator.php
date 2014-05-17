@@ -1,7 +1,6 @@
 <?php
 namespace php\lang;
 
-
-interface SeekableIterator extends \SeekableIterator{
+interface SeekableIterator extends Iterator, \SeekableIterator {
 
 }

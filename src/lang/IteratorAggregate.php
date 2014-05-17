@@ -1,7 +1,6 @@
 <?php
 namespace php\lang;
 
-
-interface IteratorAggregate extends \IteratorAggregate{
+interface IteratorAggregate extends Traversable, \IteratorAggregate {
 
 }

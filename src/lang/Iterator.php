@@ -1,7 +1,6 @@
 <?php
 namespace php\lang;
 
-
-interface Iterator extends \Iterator{
+interface Iterator extends Traversable, \Iterator {
 
 }

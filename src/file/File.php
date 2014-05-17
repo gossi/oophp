@@ -3,7 +3,7 @@
 namespace php\file;
 
 use php\file\exception\FileException;
-class File extends FileInfo {
+class File extends Resource {
  
 	public function __construct($fileName) {
 		parent::__construct($fileName);

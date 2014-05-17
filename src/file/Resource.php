@@ -5,7 +5,7 @@ namespace php\file;
 use php\file\exception\FileException;
 use php\date\DateTime;
 
-class FileInfo implements FileInfoInterface {
+class Resource {
 	
 	protected $pathName;
 	
@@ -74,7 +74,7 @@ class FileInfo implements FileInfoInterface {
 	 * 
 	 * @throws FileException When an error appeared.
 	 * @param String|PathInterface $destination The destination path.
-	 * @return File The copied file.
+	 * @return Resource The copied file.
 	 */
 	public function copy($destination) {
 		if ($destination instanceof PathInterface) {
@@ -85,18 +85,27 @@ class FileInfo implements FileInfoInterface {
 			throw new FileException(sprintf('Failed to copy %s to %s', $this->pathName, $destination));
 		}
 		
-		return new FileInfo($destination);
+		return new Resource($destination);
 	}
 	
 	
-	/* (non-PHPdoc)
-	 * @see \php\file\FileInterface::move()
+	/**
+	 * Moves a file
+	 * 
+	 * @param String|Path $destination
+	 * @return boolean Returns TRUE on success or FALSE on failure. 
 	 */
 	public function move($destination) {
-		if ($destination instanceof PathInterface) {
+		if ($destination instanceof Path) {
 			$destination = $destination->toString();
 		}
-		return rename($this->pathName, $destination);
+		
+		$return = rename($this->pathName, $destination);
+		if ($return) {
+			$this->pathName = $destination;
+		}
+
+		return $return;
 	}
 
 	
@@ -123,6 +132,10 @@ class FileInfo implements FileInfoInterface {
 	 */
 	public function exists() {
 		return file_exists($this->pathName);
+	}
+	
+	public function getExtension() {
+		return pathinfo($this->pathName, PATHINFO_EXTENSION);
 	}
 
 	/**
@@ -155,7 +168,7 @@ class FileInfo implements FileInfoInterface {
 	/**
 	 * Returns the path
 	 *
-	 * @return PathInterface
+	 * @return Path
 	 */
 	public function toPath() {
 		return new Path($this->pathName);
@@ -291,9 +304,12 @@ class FileInfo implements FileInfoInterface {
 		return is_link($this->pathName);
 	}
 
-	
-	/* (non-PHPdoc)
-	 * @see \php\file\FileInfoInterface::toFile()
+	/**
+	 * Creates a file
+	 * 
+	 * @see #isFile
+	 * 
+	 * @throws FileException whether the resource is not a file
 	 */
 	public function toFile() {
 		if (!$this->isFile()) {
@@ -303,8 +319,12 @@ class FileInfo implements FileInfoInterface {
 		return new File($this->pathName);
 	}
 	
-	/* (non-PHPdoc)
-	 * @see \php\file\FileInfoInterface::toDirectory()
+	/**
+	 * Create a directory
+	 * 
+	 * @see #isDirectory
+	 * 
+	 * @throws FileException whether the resource is not a directory
 	 */
 	public function toDirectory() {
 		if (!$this->isDirectory()) {
@@ -314,9 +334,12 @@ class FileInfo implements FileInfoInterface {
 		return new Directory($this->pathName);
 	}
 
-	
-	/* (non-PHPdoc)
-	 * @see \php\file\FileInfoInterface::toLink()
+	/**
+	 * Creates a link
+	 * 
+	 * @see #isLink
+	 * 
+	 * @throws FileException whether the resource is not a link
 	 */
 	public function toLink() {
 		if (!$this->isLink()) {

@@ -22,6 +22,12 @@ class String {
 		return $this;
 	}
 	
+	public function set($string) {
+		$this->string = $string;
+		
+		return $this;
+	}
+	
 	/**
 	 * Get string length
 	 * 
@@ -79,6 +85,14 @@ class String {
 	
 	public function format() {
 		return vsprintf($this->string, func_get_args());
+	}
+	
+	public function startsWith($search) {
+		return strpos($this->string, $search) === 0;
+	}
+	
+	public function endsWith($search) {
+		return substr($this->string, -strlen($search)) === $search;
 	}
 	
 	/**

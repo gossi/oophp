@@ -1,7 +1,6 @@
 <?php
 namespace php\lang;
 
-
-interface OuterIterator extends \OuterIterator{
+interface OuterIterator extends Iterator, \OuterIterator {
 
 }

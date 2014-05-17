@@ -1,0 +1,17 @@
+{
+	"name" : "php/collections",
+	"description" : "Collections for php (ArrayList, Set, Map, Queue and Stack)",
+	"type" : "library",
+	"autoload" : {
+		"psr-4" : {
+			"php\\date\\" : "src/date"
+		}
+	},
+	"require": {
+	    "php/lang": "dev-master"
+	}
+	"keywords" : [
+		"php",
+		"collections"
+	]
+}

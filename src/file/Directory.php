@@ -2,7 +2,7 @@
 
 namespace php\file;
 
-class Directory extends FileInfo {
+class Directory extends Resource {
 	
 	public function __construct($fileName) {
 		parent::__construct($fileName);

@@ -1,7 +1,6 @@
 <?php
 namespace php\lang;
 
-
-interface Serializable extends \Serializable{
+interface Serializable extends \Serializable {
 
 }

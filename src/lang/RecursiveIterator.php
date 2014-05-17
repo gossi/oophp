@@ -1,5 +1,5 @@
 <?php
 namespace php\lang;
 
-interface RecursiveIterator extends \RecursiveIterator {
+interface RecursiveIterator extends Iterator, \RecursiveIterator {
 }

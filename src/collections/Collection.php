@@ -4,20 +4,16 @@ namespace php\collections;
 
 use php\lang\Iterator;
 use php\lang\IteratorAggregate;
+use php\lang\Countable;
 
-interface Collection extends Iterator, IteratorAggregate {
-	
-	public function add($element);
+interface Collection extends Iterator, Countable {
 	
 	public function clear();
 	
-	public function contains($element);
-	
 	public function isEmpty();
 	
-	public function remove($element);
+	public function contains($element);
 	
 	public function size();
-	
-	public function toArray();
+
 }

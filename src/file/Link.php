@@ -2,7 +2,7 @@
 
 namespace php\file;
 
-class Link extends FileInfo {
+class Link extends Resource {
 	
 	public function __construct($fileName) {
 		parent::__construct($fileName);

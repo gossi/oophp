@@ -8,6 +8,11 @@
 			"php\\" : "src"
 		}
 	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"php\\tests\\" : "tests"
+		}
+	},
 	"name" : "gossi/oophp",
 	"type" : "library",
 	"description" : "What if php would be an object oriented programming language",
@@ -16,6 +21,7 @@
 		"php" : ">=5.4"
 	},
 	"require-dev" : {
-		"sami/sami" : "~1"
+		"sami/sami" : "~1",
+		"phpunit/phpunit" : "~4"
 	}
 }

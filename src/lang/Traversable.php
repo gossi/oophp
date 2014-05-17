@@ -1,7 +1,6 @@
 <?php
 namespace php\lang;
 
-
-interface Traversable extends \Traversable{
+interface Traversable extends \Traversable {
 
 }
