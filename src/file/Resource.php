@@ -5,123 +5,12 @@ namespace php\file;
 use php\file\exception\FileException;
 use php\date\DateTime;
 
-class Resource {
+class Resource implements FileInfo {
 	
 	protected $pathName;
 	
 	public function __construct($pathName) {
 		$this->pathName = $pathName;	
-	}
-	
-	/**
-	 * Attempts to change the group.
-	 *  
-	 * Only the superuser may change the group arbitrarily; other users may 
-	 * change the group of a file to any group of which that user is a member.
-	 *  
-	 * @param mixed $group A group name or number.
-	 * @return boolean Returns TRUE on success or FALSE on failure.  
-	 */
-	public function changeGroup($group) {
-		if ($this->isFile()) {
-			return chgrp($this->pathName, $group);
-		} else if ($this->isLink()) {
-			return lchgrp($this->pathName, $group);
-		}
-	}
-	
-	/**
-	 * Attempts to change the mode. 
-	 * 
-	 * @see #changeGroup
-	 * @see #changeOwner
-	 * 
-	 * @param int $mode 
-	 * 		Note that mode is not automatically assumed to be an octal value, so strings 
-	 * 		(such as "g+w") will not work properly. To ensure the expected operation, you 
-	 * 		need to prefix mode with a zero (0).
-	 * 
-	 * @return boolean Returns TRUE on success or FALSE on failure.
-	 */
-	public function changeMode($mode) {
-		if ($this->isFile()) {
-			return chmod($this->pathName, $mode);
-		} else if ($this->isLink()) {
-			return lchmod($this->pathName, $mode);
-		}
-	}
-	
-	/**
-	 * Changes file owner
-	 * 
-	 * Attempts to change the owner. Only the superuser may change the owner of a file.
-	 *  
-	 * @param mixed $user A user name or number. 
-	 * @return boolean Returns TRUE on success or FALSE on failure. 
-	 */
-	public function changeOwner($user) {
-		if ($this->isFile()) {
-			return chown($this->pathName, $user);
-		} else if ($this->isLink()) {
-			return lchown($this->pathName, $user);
-		}
-	}
-	
-	/**
-	 * Copies file
-	 * 
-	 * If the destination file already exists, it will be overwritten. 
-	 * 
-	 * @throws FileException When an error appeared.
-	 * @param String|PathInterface $destination The destination path.
-	 * @return Resource The copied file.
-	 */
-	public function copy($destination) {
-		if ($destination instanceof PathInterface) {
-			$destination = $destination->toString();
-		}
-
-		if (!copy($this->pathName, $destination)) {
-			throw new FileException(sprintf('Failed to copy %s to %s', $this->pathName, $destination));
-		}
-		
-		return new Resource($destination);
-	}
-	
-	
-	/**
-	 * Moves a file
-	 * 
-	 * @param String|Path $destination
-	 * @return boolean Returns TRUE on success or FALSE on failure. 
-	 */
-	public function move($destination) {
-		if ($destination instanceof Path) {
-			$destination = $destination->toString();
-		}
-		
-		$return = rename($this->pathName, $destination);
-		if ($return) {
-			$this->pathName = $destination;
-		}
-
-		return $return;
-	}
-
-	
-	/**
-	 * Deletes the file
-	 */
-	public function delete() {
-		if ($this->isFile() || $this->isLink()) {
-			unlink($this->pathName);
-		} else if ($this->isDirectory()) {
-			$files = $this->readDirectory();
-			foreach ($files as $file) {
-				$file->delete();
-			}
-			rmdir($this->pathName);
-		}
 	}
 
 	/**
@@ -179,7 +68,7 @@ class Resource {
 	 * 
 	 * @return DateTime
 	 */
-	public function getATime() {
+	public function getLastAccessedAt() {
 		$timestamp = fileatime($this->pathName);
 		$time = new DateTime();
 		$time->setTimestamp($timestamp);
@@ -191,7 +80,7 @@ class Resource {
 	 *
 	 * @return DateTime
 	 */
-	public function getCTime() {
+	public function getCreatedAt() {
 		$timestamp = filectime($this->pathName);
 		$time = new DateTime();
 		$time->setTimestamp($timestamp);
@@ -203,7 +92,7 @@ class Resource {
 	 *
 	 * @return DateTime
 	 */
-	public function getMTime() {
+	public function getModifiedAt() {
 		$timestamp = filemtime($this->pathName);
 		$time = new DateTime();
 		$time->setTimestamp($timestamp);

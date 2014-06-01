@@ -67,7 +67,7 @@ class ArrayList extends AbstractCollection {
 	 * @return int the index for the given element
 	 */
 	public function indexOf($element) {
-		return array_search($element, $this->collection);
+		return array_search($element, $this->collection, true);
 	}
 	
 	/**
@@ -77,7 +77,7 @@ class ArrayList extends AbstractCollection {
 	 * @return ArrayList $this
 	 */
 	public function remove($element) {
-		$index = array_search($element, $this->collection);
+		$index = array_search($element, $this->collection, true);
 		if ($index !== null) {
 			unset($this->collection[$index]);
 		}

@@ -1,0 +1,17 @@
+{
+	"name" : "php/math",
+	"description" : "php math collection",
+	"type" : "library",
+	"autoload" : {
+		"psr-4" : {
+			"php\\math\\" : "src/math"
+		}
+	},
+	"require" : {
+		"php/lang" : "dev-master"
+	},
+	"keywords" : [
+		"php",
+		"math"
+	]
+}

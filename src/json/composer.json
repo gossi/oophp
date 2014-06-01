@@ -1,0 +1,19 @@
+{
+	"name" : "php/json",
+	"description" : "php json functionality",
+	"type" : "library",
+	"autoload" : {
+		"psr-4" : {
+			"php\\json\\" : "src/json"
+		}
+	},
+	"require" : {
+		"php/lang" : "dev-master",
+		"php/exception" : "dev-master"
+	},
+	"keywords" : [
+		"php",
+		"json"
+	],
+	"homepage" : "http://php.net/manual/en/book.json.php"
+}

@@ -13,7 +13,7 @@ abstract class AbstractCollection implements Collection {
 	}
 	
 	public function size() {
-		return $this->count();
+		return count($this->collection);
 	}
 	
 	public function isEmpty() {
@@ -62,11 +62,5 @@ abstract class AbstractCollection implements Collection {
 	function valid() {
 		return key($this->collection) !== null;
 	}
-	
-	/**
-	 * @internal
-	 */
-	public function count() {
-		return count($this->collection);
-	}
+
 }

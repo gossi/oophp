@@ -1,0 +1,19 @@
+{
+	"name" : "php/ftp",
+	"description" : "php ftp functionality",
+	"type" : "library",
+	"autoload" : {
+		"psr-4" : {
+			"php\\ftp\\" : "src/ftp"
+		}
+	},
+	"require" : {
+		"php/exception" : "dev-master",
+		"php/file" : "dev-master"
+	},
+	"keywords" : [
+		"php",
+		"ftp"
+	],
+	"homepage" : "http://php.net/manual/en/book.ftp.php"
+}

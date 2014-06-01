@@ -53,7 +53,7 @@ class Set extends AbstractCollection {
 	 * @return Set $this
 	 */
 	public function remove($element) {
-		$index = array_search($element, $this->collection);
+		$index = array_search($element, $this->collection, true);
 		if ($index !== null) {
 			unset($this->collection[$index]);
 		}

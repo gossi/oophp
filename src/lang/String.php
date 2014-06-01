@@ -2,7 +2,7 @@
 
 namespace php\lang;
 
-class String {
+class String implements ArrayAccess {
 	
 	private $string;
 	
@@ -50,19 +50,21 @@ class String {
 	 * 
 	 * 		If the limit parameter is zero, then this is treated as 1.
 	 * 
-	 * @return array 
+	 * @return ArrayObject 
 	 * 		Returns an array of strings created by splitting the string parameter on boundaries 
 	 * 		formed by the delimiter. 
 	 * 
 	 * 		If delimiter is an empty string (""), split() will return FALSE. If delimiter contains 
 	 * 		a value that is not contained in string and a negative limit is used, then an empty 
-	 * 		array will be returned, otherwise an array containing string will be returned. 
+	 * 		array will be returned, otherwise an array containing string will be returned.
+	 * 
+	 * 		TODO: Maybe throw an exception or something?
 	 */
 	public function split($delimiter, $limit = null) {
 		if ($limit) {
-			return explode($delimiter, $this->string, $limit);
+			return new ArrayObject(explode($delimiter, $this->string, $limit));
 		} else {
-			return explode($delimiter, $this->string);
+			return new ArrayObject(explode($delimiter, $this->string));
 		}
 	}
 
@@ -267,5 +269,35 @@ class String {
 	
 	public function __toString() {
 		return $this->string;
+	}
+	
+	/**
+	 * @internal
+	 */
+	public function offsetSet($offset, $value) {
+		if (!is_null($offset)) {
+			$this->string[$offset] = $value;
+		}
+	}
+	
+	/**
+	 * @internal
+	 */
+	public function offsetExists($offset) {
+		return isset($this->string[$offset]);
+	}
+	
+	/**
+	 * @internal
+	 */
+	public function offsetUnset($offset) {
+		unset($this->string[$offset]);
+	}
+	
+	/**
+	 * @internal
+	 */
+	public function offsetGet($offset) {
+		return isset($this->string[$offset]) ? $this->string[$offset] : null;
 	}
 }

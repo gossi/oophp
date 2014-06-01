@@ -10,7 +10,8 @@
 	},
 	"require" : {
 		"php/date" : "dev-master",
-		"php/lang" : "dev-master"
+		"php/lang" : "dev-master",
+		"php/exception" : "dev-master"
 	},
 	"keywords" : [
 		"php",

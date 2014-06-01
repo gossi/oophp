@@ -1,0 +1,15 @@
+{
+	"name" : "php/exception",
+	"description" : "php exceptions",
+	"type" : "library",
+	"homepage" : "http://php.net/manual/en/language.exceptions.php",
+	"autoload" : {
+		"psr-4" : {
+			"php\\exception\\" : "src/exception"
+		}
+	},
+	"keywords" : [
+		"php",
+		"exception"
+	]
+}

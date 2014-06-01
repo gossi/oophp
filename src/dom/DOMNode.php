@@ -2,6 +2,6 @@
 namespace php\dom;
 
 
-class DOMNode extends \DOMNode{
+class DOMNode extends \DOMNode {
 
 }

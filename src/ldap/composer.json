@@ -1,0 +1,19 @@
+{
+	"name" : "php/ldap",
+	"description" : "php ldap functionality",
+	"type" : "library",
+	"autoload" : {
+		"psr-4" : {
+			"php\\ldap\\" : "src/ldap"
+		}
+	},
+	"require" : {
+		"php/lang" : "dev-master",
+		"php/exception" : "dev-master"
+	},
+	"keywords" : [
+		"php",
+		"ldap"
+	],
+	"homepage" : "http://php.net/manual/en/book.ldap.php"
+}
