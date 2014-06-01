@@ -104,3 +104,6 @@ A very rough plan for this:
 7. Create Proposal at PHP to implement the API into the language.
 
 Maybe turn it into a PSR so php users will already use this.
+
+## Reference
+- [PHP6 Ideas](https://wiki.php.net/ideas/php6#userland_apis_improvement_for_all_php_types)
