@@ -96,7 +96,7 @@ class Ldap {
 	const OPT_X_SASL_REALM = 24833;
 	const OPT_X_SASL_AUTHCID = 24834;
 	const OPT_X_SASL_AUTHZID = 24835;
-	
+
 
 	private $connection;
 

@@ -5,6 +5,7 @@ namespace php\ldap;
  * This class represents an LDAP Entry.
  * 
  * @author Thomas Gossmann
+ * @TODO: NEEDS A REWRITE, CAN'T WORK WITH MULTIPLE ATTRIBUTES
  */
 class LdapEntry {
 
@@ -65,7 +66,7 @@ class LdapEntry {
 	 * @return String The distinguished name.
 	 */
 	public function getDN() {
-		return $this->dn; 
+		return $this->dn;
 	}
 
 	/**

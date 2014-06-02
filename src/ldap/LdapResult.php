@@ -2,17 +2,19 @@
 namespace php\ldap;
 
 use php\ldap\exception\LdapException;
-class LdapResult {
+use php\lang\Iterator;
+
+class LdapResult implements Iterator {
 
 	private $conn;
 	private $result;
-	private $pointer = null;
+	private $pointer = false;
 
 	/**
 	 * Constructs a new LdapEntry.
 	 *
-	 * @param RessourceIdentifier $conn An LDAP link identifier, returned by ldap_connect.
-	 * @param RessourceIdentifier $entry An LDAP link identifier, returned by ldap_search, ldap_list or ldap_read.
+	 * @param resource $conn An LDAP link identifier, returned by ldap_connect.
+	 * @param resource $entry An LDAP link identifier, returned by ldap_search, ldap_list or ldap_read.
 	 */
 	function __construct($conn, $result) {
 		$this->conn = $conn;
@@ -31,8 +33,8 @@ class LdapResult {
 	/**
 	 * Returns the first entry in the result set.
 	 * 
-	 * @throws \gossi\ldap\LdapException If the read fails.
-	 * @return \gossi\ldap\LdapEntry The new LdapEntry.
+	 * @throws LdapException If the read fails.
+	 * @return LdapEntry The new LdapEntry.
 	 */
 	public function getFirstEntry() {
 		$this->pointer = ldap_first_entry($this->conn, $this->result);
@@ -46,10 +48,10 @@ class LdapResult {
 	/**
 	 * Returns the next entry in the result set or false wether there are no more entries.
 	 * 
-	 * @return \gossi\ldap\LdapEntry The new LdapEntry.
+	 * @return LdapEntry The new LdapEntry.
 	 */
 	public function getNextEntry() {
-		if ($this->pointer == null) {
+		if (!$this->pointer) {
 			return $this->getFirstEntry();
 		}
 
@@ -59,6 +61,45 @@ class LdapResult {
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * @internal
+	 */
+	function rewind() {
+		$this->pointer = false;
+	}
+
+	/**
+	 * @internal
+	 */
+	function current() {
+		return new LdapEntry($this->conn, $this->pointer);
+	}
+
+	/**
+	 * @internal
+	 */
+	function key() {
+		return $this->pointer;
+	}
+
+	/**
+	 * @internal
+	 */
+	function next() {
+		if (!$this->pointer) {
+			$this->pointer = ldap_first_entry($this->conn, $this->result);
+		} else {
+			$this->pointer = ldap_next_entry($this->conn, $this->pointer);
+		}
+	}
+
+	/**
+	 * @internal
+	 */
+	function valid() {
+		return $this->pointer && ldap_errno($this->conn) === LdapError::SUCCESS;
 	}
 }
 ?>
