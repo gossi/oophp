@@ -3,13 +3,16 @@
 	"description" : "php OO language wrapper",
 	"type" : "library",
 	"homepage" : "http://www.php.net/manual/langref.php",
+	"keywords" : [
+		"php",
+		"lang"
+	],
 	"autoload" : {
 		"psr-4" : {
 			"php\\lang\\" : "src/lang"
 		}
 	},
-	"keywords" : [
-		"php",
-		"lang"
-	]
+	"require": {
+	    "php/math": "dev-master"
+	}
 }

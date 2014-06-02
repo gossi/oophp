@@ -1,5 +1,5 @@
 {
-	"name" : "php/collections",
+	"name" : "php/collection",
 	"description" : "Collections for php (ArrayList, Set, Map, Queue and Stack)",
 	"type" : "library",
 	"autoload" : {
@@ -7,9 +7,9 @@
 			"php\\date\\" : "src/date"
 		}
 	},
-	"require": {
-	    "php/lang": "dev-master"
-	}
+	"require" : {
+		"php/lang" : "dev-master"
+	},
 	"keywords" : [
 		"php",
 		"collections"

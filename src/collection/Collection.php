@@ -1,6 +1,5 @@
 <?php
-
-namespace php\collections;
+namespace php\collection;
 
 use php\lang\Iterator;
 use php\lang\IteratorAggregate;

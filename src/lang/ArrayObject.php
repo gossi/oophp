@@ -30,13 +30,34 @@ class ArrayObject implements ArrayAccess {
 	}
 	
 	/**
-	 /* @return ArrayObject
+	 * @return ArrayObject
 	 */
 	public function filter(callable $callback) {
 		return new ArrayObject(array_values(array_filter($this->collection, $callback)));
 	}
 	
-
+	public function reduce() {
+		
+	}
+	
+	public function merge($values) {
+		$this->array = array_merge($this->array, func_get_args());
+		return $this;
+	}
+	
+	public function keys() {
+		return new ArrayObject(array_keys($this->array));
+	}
+	
+	public function values() {
+		return new ArrayObject(array_values($this->array));
+	}
+	
+	public function flip() {
+		$this->array = array_flip($this->array);
+		return $this;
+	}
+	
 	/**
 	 * @internal
 	 */

@@ -28,6 +28,14 @@ class Math {
 	public static function floor($value) {
 		return floor($value);
 	}
+
+	public static function min($values) {
+		return min(func_get_args());
+	}
+
+	public static function max($values) {
+		return max(func_get_args());
+	}
 	
 	// ..
 }

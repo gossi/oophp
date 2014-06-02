@@ -2,6 +2,7 @@
 
 namespace php\lang;
 
+use php\math\Math;
 class String implements ArrayAccess, Comparable {
 	
 	private $string;
@@ -54,7 +55,7 @@ class String implements ArrayAccess, Comparable {
 	 */
 	
 	public function compareTo($compare) {
-		return $this->compare($compare, 'strcmp');
+		return $this->compare($compare);
 	}
 
 	public function compareCaseInsensitive($compare) {
@@ -66,8 +67,16 @@ class String implements ArrayAccess, Comparable {
 	 * @param string $compare string to compare to
 	 * @param callable $callback
 	 */
-	public function compare($compare, callable $callback) {
+	public function compare($compare, callable $callback = 'strcmp') {
 		return $callback($this->string, $compare);
+	}
+	
+	public function equals($string) {
+		return $this->compareTo($string) === 0;
+	}
+	
+	public function equalsIgnoreCase($string) {
+		return $this->compareCaseInsensitive($string) === 0;
 	}
 	
 	/*
@@ -84,16 +93,20 @@ class String implements ArrayAccess, Comparable {
 	
 		return new String(substr($this->string, $offset, $length));
 	}
-	
-	public function replaceSlice($replacement, $offset, $length = null) {
+
+	public function splice($replacement, $offset, $length = null) {
 		$offset = $this->prepareOffset($offset);
 		$length = $this->prepareLength($offset, $length);
 	
 		return new String(substr_replace($this->string, $replacement, $offset, $length));
 	}
-	
-	public function substring($start, $end) {
-		
+
+	public function substring($start, $end = null) {
+		$length = $this->length();
+		$end = $end !== null ? Math::min($end, $length) : $length;
+		$start = Math::min($start, $end);
+
+		return new String(substr($this->string, $start, $length - $end - $start));
 	}
 	
 	/*
@@ -110,23 +123,33 @@ class String implements ArrayAccess, Comparable {
 	 * 		The replacement value that replaces found search values. An array may be used to
 	 * 		designate multiple replacements.
 	 *
-	 * @return String
+	 * @return $this for fluent API support
 	 */
 	public function replace($search, $replace) {
-		return new String(str_replace($search, $replace, $this->string));
+		$this->string = str_replace($search, $replace, $this->string);
+		return $this;
+	}
+
+	public function supplant(array $map) {
+		$this->string = str_replace(array_keys($map), array_values($map), $this->string);
+		return $this;
 	}
 	
 	/*
 	 * Search methods
 	 */
-	
+
+	public function charAt($index) {
+		return $this->offsetGet($index);
+	}
+
 	public function indexOf($string, $offset = 0) {
 		$offset = $this->prepareOffset($offset);
 	
-		if ('' === $string) {
+		if ($string === '') {
 			return $offset;
 		}
-	
+
 		return strpos($this->string, $string, $offset);
 	}
 	
@@ -136,8 +159,8 @@ class String implements ArrayAccess, Comparable {
 		} else {
 			$offset = $this->prepareOffset($offset);
 		}
-	
-		if ('' === $string) {
+
+		if ($string === '') {
 			return $offset;
 		}
 	
@@ -156,88 +179,96 @@ class String implements ArrayAccess, Comparable {
 	}
 	
 	public function contains($string) {
-		return false !== $this->indexOf($string);
+		return $this->indexOf($string) !== false;
 	}
 	
 	public function count($string, $offset = 0, $length = null) {
 		$offset = $this->prepareOffset($offset);
 		$length = $this->prepareLength($offset, $length);
 	
-		if ('' === $string) {
+		if ($string === '') {
 			return $length + 1;
 		}
 	
 		return substr_count($this->string, $string, $offset, $length);
 	}
+	
+	public function match($regexp) {
+		return preg_match($regexp, $this->string);
+	}
 
 	/*
 	 * Formatting methods
 	 */
-	
+
 	// should this be in a formatter?
 	public function format() {
 		return vsprintf($this->string, func_get_args());
 	}
 
-	
 	/**
-	 * Returns a lowercased copy of the string
+	 * Transforms the string to lowercase
 	 * 
-	 * @return String
+	 * @return $this for fluent API support
 	 */
 	public function lower() {
-		return new String(strtolower($this->string));
+		$this->string = strtolower($this->string);
+		return $this;
 	}
-	
+
 	/**
-	 * Returns a copy of the string with the first character lowercased
+	 * Transforms the string to first character lowercased
 	 *
-	 * @return String
+	 * @return $this for fluent API support
 	 */
 	public function lowerFirst() {
-		return new String(lcfirst($this->string));
+		$this->string = lcfirst($this->string);
+		return $this;
 	}
 	
 	/**
-	 * Returns an uppercased copy of the string
+	 * Transforms the string to uppercase
 	 *
-	 * @return String
+	 * @return $this for fluent API support
 	 */
 	public function upper() {
-		return new String(strtoupper($this->string));
+		$this->string = strtoupper($this->string);
+		return $this;
 	}
 	
 	/**
-	 * Returns a copy of the string with the first character uppercased
+	 * Transforms the string to first character uppercased
 	 *
-	 * @return String
+	 * @return $this
 	 */
 	public function upperFirst() {
-		return new String(ucfirst($this->string));
+		$this->string = ucfirst($this->string);
+		return $this;
 	}
 	
 	/**
-	 * Returns a copy of the string with the first character of each word uppercased
+	 * Transforms the string to first character of each word uppercased
 	 * 
-	 * @return String
+	 * @return $this for fluent API support
 	 */
 	public function upperWords() {
-		return new String(ucwords($this->string));
+		$this->string = ucwords($this->string);
+		return $this;
 	}
 	
 	/**
-	 * Returns a copy of the string with only its first character capitalized.
+	 * Transforms the string to only its first character capitalized.
 	 * 
-	 * @return String 
+	 * @return $this for fluent API support
 	 */
 	public function capitalize() {
 		return $this->lower()->upperFirst();
 	}
 	
 	/**
-	 * Returns a copy of the string with the words capitalized.
+	 * Transforms the string with the words capitalized.
 	 * 
-	 * @return String
+	 * @return $this for fluent API support
 	 */
 	public function capitalizeWords() {
 		return $this->lower()->upperWords();
@@ -251,7 +282,7 @@ class String implements ArrayAccess, Comparable {
 	 * 		Simply list all characters that you want to be stripped. With .. you can specify a 
 	 * 		range of characters.
 	 *  
-	 * @return String $this for fluent API support
+	 * @return $this for fluent API support
 	 */
 	public function trim($characters = " \t\n\r\v\0") {
 		trim($this->string, $characters);
@@ -266,7 +297,7 @@ class String implements ArrayAccess, Comparable {
 	 * 		Simply list all characters that you want to be stripped. With .. you can specify a
 	 * 		range of characters.
 	 *
-	 * @return String $this for fluent API support
+	 * @return $this for fluent API support
 	 */
 	public function trimLeft($characters = " \t\n\r\v\0") {
 		ltrim($this->string, $characters);
@@ -281,7 +312,7 @@ class String implements ArrayAccess, Comparable {
 	 * 		Simply list all characters that you want to be stripped. With .. you can specify a
 	 * 		range of characters.
 	 *
-	 * @return String $this for fluent API support
+	 * @return $this for fluent API support
 	 */
 	public function trimRight($characters = " \t\n\r\v\0") {
 		rtrim($this->string, $characters);
@@ -311,14 +342,16 @@ class String implements ArrayAccess, Comparable {
 	public function wrapWords($width = 75, $break = "\n", $cut = false) {
 		return new String(wordwrap($this->string, $width, $break, $cut));
 	}
-	
+
+	// TODO: copy or modify?
 	public function repeat($times) {
 		$this->verifyNotNegative($times, 'Number of repetitions');
 		return new String(str_repeat($this->string, $times));
 	}
-	
+
 	public function reverse() {
-		return new String(strrev($this->string));
+		$this->string = strrev($this->string);
+		return $this;
 	}
 	
 	/*
@@ -348,14 +381,10 @@ class String implements ArrayAccess, Comparable {
 	 *
 	 * 		TODO: Maybe throw an exception or something on those odd delimiters?
 	 */
-	public function split($delimiter, $limit = null) {
-		if ($limit) {
-			return new ArrayObject(explode($delimiter, $this->string, $limit));
-		} else {
-			return new ArrayObject(explode($delimiter, $this->string));
-		}
+	public function split($delimiter, $limit = PHP_INT_MAX) {
+		return new ArrayObject(explode($delimiter, $this->string, $limit));
 	}
-	
+
 	/**
 	 * Join array elements with a string
 	 *
