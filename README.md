@@ -86,6 +86,7 @@ Related Links:
 - [nikic/scalar_objects](https://github.com/nikic/scalar_objects)
 - [rossriley/php-scalar-objects](https://github.com/rossriley/php-scalar-objects)
 - [PHP6 Ideas, Section: Scalar type hinting and return typing](https://wiki.php.net/ideas/php6#scalar_type_hinting_and_return_typing)
+- [HOA String](https://github.com/hoaproject/String)
 
 ### Offer more type hinting
 
