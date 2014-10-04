@@ -1,0 +1,19 @@
+{
+	"name" : "php/dom",
+	"description" : "php dom package",
+	"type" : "library",
+	"homepage" : "http://php.net/manual/book.dom.php",
+	"keywords" : [
+		"php",
+		"dom"
+	],
+	"autoload" : {
+		"psr-4" : {
+			"php\\dom\\" : "src/dom"
+		}
+	},
+	"require" : {
+		"php/lang" : "dev-master",
+		"php/exception" : "dev-master"
+	}
+}

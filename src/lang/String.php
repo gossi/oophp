@@ -1,8 +1,8 @@
 <?php
-
 namespace php\lang;
 
 use php\math\Math;
+
 class String implements ArrayAccess, Comparable {
 	
 	private $string;
@@ -53,11 +53,21 @@ class String implements ArrayAccess, Comparable {
 	/*
 	 * Comparison
 	 */
-	
+
 	public function compareTo($compare) {
 		return $this->compare($compare);
 	}
 
+	/**
+	 * Compares this string to another string, ignoring the case
+	 * 
+	 * @param mixed $compare
+	 * @return int 
+	 * 		Return Values:
+	 * 		< 0 if the object is less than comparison
+	 * 		> 0 if the object is greater than comparison 
+	 * 		0 if they are equal. 
+	 */
 	public function compareCaseInsensitive($compare) {
 		return $this->compare($compare, 'strcasecmp');
 	}
@@ -71,10 +81,22 @@ class String implements ArrayAccess, Comparable {
 		return $callback($this->string, $compare);
 	}
 	
+	/**
+	 * Checks wether the string and the given object are equal
+	 * 
+	 * @param mixed $string
+	 * @return boolean
+	 */
 	public function equals($string) {
 		return $this->compareTo($string) === 0;
 	}
 	
+	/**
+	 * Checks wether the string and the given object are equal ignoring the case
+	 * 
+	 * @param mixed $string
+	 * @return boolean
+	 */
 	public function equalsIgnoreCase($string) {
 		return $this->compareCaseInsensitive($string) === 0;
 	}
@@ -83,17 +105,27 @@ class String implements ArrayAccess, Comparable {
 	 * Slicing methods
 	 */
 	
+	/**
+	 * Slices a piece of the string from a given offset with a specified length. 
+	 * If no length is given, the String is sliced to its maximum length.
+	 * 
+	 * @see #substring
+	 * @param int $offset
+	 * @param int $length
+	 * @return String
+	 */
 	public function slice($offset, $length = null) {
 		$offset = $this->prepareOffset($offset);
 		$length = $this->prepareLength($offset, $length);
-	
-		if (0 === $length) {
-			return '';
+
+		if ($length === 0) {
+			return new String('');
 		}
 	
 		return new String(substr($this->string, $offset, $length));
 	}
 
+	
 	public function splice($replacement, $offset, $length = null) {
 		$offset = $this->prepareOffset($offset);
 		$length = $this->prepareLength($offset, $length);
@@ -101,6 +133,15 @@ class String implements ArrayAccess, Comparable {
 		return new String(substr_replace($this->string, $replacement, $offset, $length));
 	}
 
+	/**
+	 * Slices a piece of the string from a given start to an end.
+	 * If no length is given, the String is sliced to its maximum length.
+	 * 
+	 * @see #slice
+	 * @param int $start
+	 * @param int $end
+	 * @return String
+	 */
 	public function substring($start, $end = null) {
 		$length = $this->length();
 		$end = $end !== null ? Math::min($end, $length) : $length;
@@ -116,6 +157,7 @@ class String implements ArrayAccess, Comparable {
 	/**
 	 * Replace all occurrences of the search string with the replacement string
 	 *
+	 * @see #supplant
 	 * @param array|string $search
 	 * 		The value being searched for, otherwise known as the needle. An array may be used
 	 * 		to designate multiple needles.
@@ -130,6 +172,12 @@ class String implements ArrayAccess, Comparable {
 		return $this;
 	}
 
+	/**
+	 * Replaces all occurences of given replacement map. Keys will be replaced with its values.
+	 * 
+	 * @param array $map the replacements. Keys will be replaced with its value.
+	 * @return String $this for fluent API support
+	 */
 	public function supplant(array $map) {
 		$this->string = str_replace(array_keys($map), array_values($map), $this->string);
 		return $this;
@@ -198,7 +246,7 @@ class String implements ArrayAccess, Comparable {
 	}
 
 	/*
-	 * Formatting methods
+	 * Formatting and transformation methods
 	 */
 
 	// should this be in a formatter?
@@ -379,7 +427,7 @@ class String implements ArrayAccess, Comparable {
 	 * 		a value that is not contained in string and a negative limit is used, then an empty
 	 * 		array will be returned, otherwise an array containing string will be returned.
 	 *
-	 * 		TODO: Maybe throw an exception or something on those odd delimiters?
+	 * @TODO: Maybe throw an exception or something on those odd delimiters?
 	 */
 	public function split($delimiter, $limit = PHP_INT_MAX) {
 		return new ArrayObject(explode($delimiter, $this->string, $limit));
@@ -470,7 +518,7 @@ class String implements ArrayAccess, Comparable {
 	}
 	
 	protected function prepareLength($offset, $length) {
-		if (null === $length) {
+		if ($length === null) {
 			return $this->length() - $offset;
 		}
 	
@@ -502,12 +550,12 @@ class String implements ArrayAccess, Comparable {
 	}
 	
 	protected function replacePairs($replacements, $limit) {
-		if (null === $limit) {
-			return strtr($this, $replacements);
+		if ($limit === null) {
+			return strtr($this->string, $replacements);
 		}
 	
 		$this->verifyPositive($limit, 'Limit');
-		$str = $this;
+		$str = $this->string;
 		foreach ($replacements as $from => $to) {
 			$str = $this->replaceWithLimit($str, $from, $to, $limit);
 			if (0 === $limit) {
@@ -522,7 +570,7 @@ class String implements ArrayAccess, Comparable {
 		$index = 0;
 	
 		while (false !== $index = $str->indexOf($from, $index)) {
-			$str = $str->replaceSlice($to, $index, $to->length());
+			$str = $str->splice($to, $index, $to->length());
 			$index += $lenDiff;
 	
 			if (0 === --$limit) {

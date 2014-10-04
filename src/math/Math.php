@@ -12,7 +12,6 @@ class Math {
 	
 	/**
 	 * 
-	 * 
 	 * @param Number $base
 	 * @param Number $exponent
 	 * @return Number

@@ -12,7 +12,7 @@
 			"php\\lang\\" : "src/lang"
 		}
 	},
-	"require": {
-	    "php/math": "dev-master"
+	"require" : {
+		"php/math" : "dev-master"
 	}
 }

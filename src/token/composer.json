@@ -1,0 +1,19 @@
+{
+	"name" : "php/token",
+	"description" : "php tokenize support",
+	"type" : "library",
+	"homepage" : "http://php.net/manual/book.tokenizer.php",
+	"autoload" : {
+		"psr-4" : {
+			"php\\date\\" : "src/date"
+		}
+	},
+	"keywords" : [
+		"php",
+		"token",
+		"tokenize"
+	],
+	"require": {
+		"php/collection" : "dev-master"
+	}
+}
